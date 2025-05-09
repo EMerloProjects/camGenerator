@@ -1,4 +1,4 @@
-This file is an example of a comlete program I wrote during an R&D project.
+This file is an example of a complete program I wrote during an R&D project.
 
 Althoug it is related to a specific task it contains 95% of the scripts and functions I use regularly.
 Hence it is here just to serve myself as a personal python cheat sheet as to not re-invent the wheel every single time I have to write code.
