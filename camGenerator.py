@@ -36,13 +36,13 @@ os.system('cls')
 
 
 ### 1.  LETTURA FILE EXCEL CON LUT SALITA
-nome_percorso_LUT_salita = str(r'C:\Users\e.merlo\Desktop\lookuptableSalita_FD618-FD821.xlsx')
-yM1Salita = pd.read_excel(nome_percorso_LUT_salita, usecols = "A")
-yM2Salita = pd.read_excel(nome_percorso_LUT_salita, usecols = "B")
-yR1Salita = pd.read_excel(nome_percorso_LUT_salita, usecols = "C")
-yR2Salita = pd.read_excel(nome_percorso_LUT_salita, usecols = "D")
-yR3Salita = pd.read_excel(nome_percorso_LUT_salita, usecols = "E")
-yR4Salita = pd.read_excel(nome_percorso_LUT_salita, usecols = "F")
+nomePercorsoLUTsalita = str(r'C:\Users\e.merlo\Desktop\lookuptableSalita_FD618-FD821.xlsx')
+yM1Salita = pd.read_excel(nomePercorsoLUTsalita, usecols = "A")
+yM2Salita = pd.read_excel(nomePercorsoLUTsalita, usecols = "B")
+yR1Salita = pd.read_excel(nomePercorsoLUTsalita, usecols = "C")
+yR2Salita = pd.read_excel(nomePercorsoLUTsalita, usecols = "D")
+yR3Salita = pd.read_excel(nomePercorsoLUTsalita, usecols = "E")
+yR4Salita = pd.read_excel(nomePercorsoLUTsalita, usecols = "F")
 
 yM1Salita = np.array(yM1Salita)
 yM2Salita = np.array(yM2Salita)
