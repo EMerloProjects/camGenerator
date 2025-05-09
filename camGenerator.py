@@ -18,35 +18,51 @@ import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 os.system('cls')
 
+    #         INDICE ANALITICO DEL CODICE
+    # 1.  LETTURA FILE EXCEL CON LUT SALITA
+    # 2.  LETTURA FILE EXCEL CON LUT DISCESA
+    # 3.  LETTURA FILE CONFIGURAZIONE
+    # 4.  DEFINIZIONE FUNZIONI
+    # 5.  INIZIO SCRIPT
+    # 6.  DISEGNO CERCHIO INTERPOLATO DA CAMMA (PRIMO DISEGNO CAMMA + RISCRITTURA PUNTI SALITA CAMMA)
+    # 7.  CAMPIONAMENTO DEL MOVIMENTO IN FASI DI SALITA
+    # 8.  CONGIUNGE CAMMA CON CAMMA INTERPOLATA 
+    # 9.  TEST PRIMA CAMMA OTTENUTA RISPETTO AL RAGGIO DELLA PUNTERIA (ZONE DI NON RIPRODUCIBILITA')
+    # 10. RISCRIZIONE CAMMA IN BASE A RAGGIO PUNTERIA NEI PUNTI DI NON RIPRODUCIBILITA'
+    # 11. STAMPERIA PER VISUALIZZAZIONE GRAFICA
+    # 12. SALVA PUNTI CAMMA IN UN .tXt PER SOLIDWORKS
+    # 13. SALVA PUNTI CAMMA IN UN .csv PER INDRASIZE
+    # 14. COMANDI LOGICAMENTE IN FONDO AL CODICE
 
-### LETTURA FILE EXCEL CON LA LOOKUP TABLE DI M1/M2 IN SALITA
+
+### 1.  LETTURA FILE EXCEL CON LUT SALITA
 nome_percorso_LUT_salita = str(r'C:\Users\e.merlo\Desktop\lookuptableSalita_FD618-FD821.xlsx')
-y_m1_salita = pd.read_excel(nome_percorso_LUT_salita, usecols = "A")
-y_m2_salita = pd.read_excel(nome_percorso_LUT_salita, usecols = "B")
-y_r1_salita = pd.read_excel(nome_percorso_LUT_salita, usecols = "C")
-y_r2_salita = pd.read_excel(nome_percorso_LUT_salita, usecols = "D")
-y_r3_salita = pd.read_excel(nome_percorso_LUT_salita, usecols = "E")
-y_r4_salita = pd.read_excel(nome_percorso_LUT_salita, usecols = "F")
+yM1Salita = pd.read_excel(nome_percorso_LUT_salita, usecols = "A")
+yM2Salita = pd.read_excel(nome_percorso_LUT_salita, usecols = "B")
+yR1Salita = pd.read_excel(nome_percorso_LUT_salita, usecols = "C")
+yR2Salita = pd.read_excel(nome_percorso_LUT_salita, usecols = "D")
+yR3Salita = pd.read_excel(nome_percorso_LUT_salita, usecols = "E")
+yR4Salita = pd.read_excel(nome_percorso_LUT_salita, usecols = "F")
 
-yM1Salita = np.array(y_m1_salita)
-yM2Salita = np.array(y_m2_salita)
-yR1Salita = np.array(y_r1_salita)
-yR2Salita = np.array(y_r2_salita)
-yR3Salita = np.array(y_r3_salita)
-yR4Salita = np.array(y_r4_salita)
+yM1Salita = np.array(yM1Salita)
+yM2Salita = np.array(yM2Salita)
+yR1Salita = np.array(yR1Salita)
+yR2Salita = np.array(yR2Salita)
+yR3Salita = np.array(yR3Salita)
+yR4Salita = np.array(yR4Salita)
 
-### LETTURA FILE EXCEL CON LOOKUP TABLE DI M1/M2 IN DISCESA
-nome_percorso_LUT_discesa = str(r'C:\Users\e.merlo\Desktop\lookuptableDiscesa_FD618-FD821.xlsx')
-y_m1_discesa = pd.read_excel(nome_percorso_LUT_discesa, usecols = "A")
-y_m2_discesa = pd.read_excel(nome_percorso_LUT_discesa, usecols = "B")
-y_piattello_discesa = pd.read_excel(nome_percorso_LUT_discesa, usecols = "C")
+### 2.  LETTURA FILE EXCEL CON LUT DISCESA
+nomePercorsoLUTdiscesa = str(r'C:\Users\e.merlo\Desktop\lookuptableDiscesa_FD618-FD821.xlsx')
+yM1Discesa = pd.read_excel(nomePercorsoLUTdiscesa, usecols = "A")
+yM2Discesa = pd.read_excel(nomePercorsoLUTdiscesa, usecols = "B")
+yPiattelloDiscesa = pd.read_excel(nomePercorsoLUTdiscesa, usecols = "C")
 
-yM1Discesa = np.array(y_m1_discesa)
-yM2Discesa = np.array(y_m2_discesa)
-yPiattelloDiscesa = np.array(y_piattello_discesa)
+yM1Discesa = np.array(yM1Discesa)
+yM2Discesa = np.array(yM2Discesa)
+yPiattelloDiscesa = np.array(yPiattelloDiscesa)
 
 
-#### LETTURA FILE DI CONFIGURAZIONE 
+#### 3.  LETTURA FILE CONFIGURAZIONE
 nomePercorsoConfigurazione = str(r'C:\Users\e.merlo\Desktop\configurazione_cammeFD618-821.xlsx')
 configurazioneCamma = pd.read_excel(nomePercorsoConfigurazione, usecols = "B")
 configurazioneCammaArray = np.array(configurazioneCamma)
@@ -61,7 +77,7 @@ angoloInizioDiscesa = angoloFineSalita + angoloDwellAlto
 angoloFinediscesa = 360
 
 
-### DEFINIZIONE FUNZIONI
+### 4.  DEFINIZIONE FUNZIONI
 
 # trova coordinata x del cerchio
 def xCerchio(r,n,i):
@@ -169,28 +185,25 @@ def campionaOgniTot(vettore, intervalloCampionamento):
       vettoreDaSostituire.append(vettore[i])
    return vettoreDaSostituire
 
-#trova in un array la fine della curva successiva
+#trova in un array inizio e fine di una serie numerica
 def trovaInizioFineSerie(vettore):
    settoriInizioFineSerie = []
    giàInSerie = 0
-
    if len(vettore) > 2:
         settoriInizioFineSerie.append(vettore[0])
         for i in range(1,len(vettore)-1,1):
             if ((vettore[i+1] - vettore[i]) != 1) and (giàInSerie == 0):
-                    settoriInizioFineSerie.append(vettore[i])
-                    giàInSerie = 1
+                settoriInizioFineSerie.append(vettore[i])
+                giàInSerie = 1
             if ((vettore[i+1] - vettore[i]) == 1) and (giàInSerie == 1):
+                settoriInizioFineSerie.append(vettore[i])
                 giàInSerie = 0        
-        settoriInizioFineSerie.append(vettore[-1])
-
+        settoriInizioFineSerie.append(vettore[-1])            
    return settoriInizioFineSerie
 
 
-    
 
-
-### INZIO SCRIPT
+### 5.  INIZIO SCRIPT
 
 # indice di frazioni del cerchio standard
 numeroDivisioniCerchio = 3600
@@ -245,7 +258,7 @@ puntiCriticiAlzataM2 = [0] * (numeroDivisioniCerchio+1)
 indiceEsternoPuntiCritici = [0] * (numeroDivisioniCerchio+1)
 
 
-### DISEGNO CERCHIO INTERPOLATO DA LUT
+### 6.  DISEGNO CERCHIO INTERPOLATO DA CAMMA (PRIMO DISEGNO CAMMA + RISCRITTURA PUNTI SALITA CAMMA)
 ## CAMMA M1
 puntiX_M1 = []
 puntiY_M1 = []
@@ -689,7 +702,7 @@ for t in range(0, int(durataFaseInizioSalita*10)+1, 1):
 # plt.ylabel("ALZATA Y")
 
 
-#### FASE DI CAMPIONAMENTO DEL MOVIMENTO
+#### 7.  CAMPIONAMENTO DEL MOVIMENTO IN FASI DI SALITA
 
 risultatoScartazeriM1 = scartaZeriVettorepiùIndici(puntiCriticiAlzataM1)
 risultatoScartazeriM2 = scartaZeriVettorepiùIndici(puntiCriticiAlzataM2)
@@ -727,34 +740,34 @@ puntiCriticiM1Discesa = puntiCriticiAlzataM1Campionati[-2:]
 puntiCriticiM2Discesa = puntiCriticiAlzataM2Campionati[-2:]
 indiceEsternoPuntiCriticiDiscesa =  indiceEsternoPuntiCriticiCampionati[-2:]
 
-#togli quel salto tra inizioFase1 e (iniziofase1-1) nella riscrittura della fase di salita
+# togli quel salto tra inizioFase1 e (iniziofase1-1) nella riscrittura della fase di salita
 del puntiCriticiM1Salita[1]
 del punticriticiM2Salita[1]
 del indiceEsternoPuntiCriticiSalita[1]
 
-#definizione di spline per fasi di salita e discesa con tangente iniziale nulla
+# definizione di spline per fasi di salita e discesa con tangente iniziale nulla
 bcTypeSalita = ((1,0),(1,0))
 bcTypeDiscesa = ((1,0),(1,0))
 
+# crea l'oggetto spline che interpola i valori di x
 splineM1Salita = CubicSpline(indiceEsternoPuntiCriticiSalita, puntiCriticiM1Salita, bc_type=bcTypeSalita)
 splineM2Salita = CubicSpline(indiceEsternoPuntiCriticiSalita, punticriticiM2Salita, bc_type=bcTypeSalita)
 splineM1Discesa = CubicSpline(indiceEsternoPuntiCriticiDiscesa, puntiCriticiM1Discesa, bc_type=bcTypeDiscesa)
 splineM2Discesa = CubicSpline(indiceEsternoPuntiCriticiDiscesa, puntiCriticiM2Discesa, bc_type=bcTypeDiscesa)
 
-# splineM1Salita = make_smoothing_spline(indiceEsternoPuntiCriticiSalita, puntiCriticiM1Salita)
-# splineM2Salita = make_smoothing_spline(indiceEsternoPuntiCriticiSalita, punticriticiM2Salita)
 # definizione punti ascissa di salita e discesa
 newxM1Salita = np.linspace(indiceEsternoPuntiCriticiSalita[0], indiceEsternoPuntiCriticiSalita[-1],int(indiceEsternoPuntiCriticiSalita[-1]-indiceEsternoPuntiCriticiSalita[0])+1)
 newxM1Discesa = np.linspace(indiceEsternoPuntiCriticiDiscesa[0], indiceEsternoPuntiCriticiDiscesa[-1],int(indiceEsternoPuntiCriticiDiscesa[-1]-indiceEsternoPuntiCriticiDiscesa[0])+1)
 newxM2Salita = np.linspace(indiceEsternoPuntiCriticiSalita[0], indiceEsternoPuntiCriticiSalita[-1],int(indiceEsternoPuntiCriticiSalita[-1]-indiceEsternoPuntiCriticiSalita[0])+1)
 newxM2Discesa = np.linspace(indiceEsternoPuntiCriticiDiscesa[0], indiceEsternoPuntiCriticiDiscesa[-1],int(indiceEsternoPuntiCriticiDiscesa[-1]-indiceEsternoPuntiCriticiDiscesa[0])+1)
 
+# ottieni i punti di ordinata interpolando per la spline precedentemente definita
 newyM1Salita = splineM1Salita(newxM1Salita)
 newyM2Salita = splineM2Salita(newxM2Salita)
 newyM1Discesa = splineM1Discesa(newxM1Discesa)
 newyM2Discesa = splineM2Discesa(newxM2Discesa)
 
-### GIUNTA CAMMA CON CAMMA INTERPOLATA
+### 8.  CONGIUNGE CAMMA CON CAMMA INTERPOLATA 
 #creiamo una funzione che se becca la presenza di un elemento nelle nuove x prende le nuove y, altrimenti prende le y vecchie
 
 puntiX_M1Final = []
@@ -823,7 +836,7 @@ plt.title("DIAGRAMMA ALZATA CAMMA M1/M2 FINALE")
 plt.xlabel("DECIMI ANGOLO")
 plt.ylabel("ALZATA Y + ZONE DOPPIO CONTATTO")
 
-#### TEST CONTROLLO INTERPOLAZIONE CORDA RISPETTO CORDA PUNTERIA
+####  9.  TEST PRIMA CAMMA OTTENUTA RISPETTO AL RAGGIO DELLA PUNTERIA (ZONE DI NON RIPRODUCIBILITA')
 
 raggioPunteria = float(configurazioneCammaArray[8])/(2)
 raggioPunteriaSicurezza = raggioPunteria + float(2)
@@ -840,7 +853,7 @@ raggiCurvaturaM1 = 1/(curvaturaM1)
 indicePuntoDoppioContattoM1 = []
 for i in range (0, len(raggiCurvaturaM1)-2,1):
     # se la forma della camma è convessa (posso impuntarmi) e la curvatura è più piccola del raggio minimo allora devo riscrivere il punto:
-    if ( (puntiY_M1Final[i]<puntiY_M2Final[i+2]) & (raggiCurvaturaM1[i+1] < raggioPunteriaSicurezza) ): 
+    if ( (puntiY_M1Final[i]<puntiY_M2Final[i+2]) and (raggiCurvaturaM1[i+1] < raggioPunteriaSicurezza) ): 
         indicePuntoDoppioContattoM1.append(i)
 
 puntiX_M1FinalDoppioContatto = []
@@ -850,7 +863,7 @@ for i in range(0,len(indicePuntoDoppioContattoM1),1):
    puntiX_M1FinalDoppioContatto.append(newAsseAngolare_M1[indicePuntoDoppioContattoM1[i]])
    puntiY_M1FinalDoppioContatto.append(newAsseAlzata_M1[indicePuntoDoppioContattoM1[i]])
 
-plt.plot(puntiX_M1FinalDoppioContatto,puntiY_M1FinalDoppioContatto, color='red', linewidth= 4, label='M1 NON RIPRODUCIBILE')
+plt.plot(puntiX_M1FinalDoppioContatto,puntiY_M1FinalDoppioContatto, 'ro', color='red', linewidth= 4, label='M1 NON RIPRODUCIBILE')
 
 
 dxM2 = np.gradient(puntiX_M2Final)
@@ -864,7 +877,7 @@ raggiCurvaturaM2 = 1/(curvaturaM2)
 
 indicePuntoDoppioContattoM2 = []
 for i in range (0, len(raggiCurvaturaM2)-2,1):
-    if ( (puntiY_M2Final[i]<puntiY_M2Final[i+2]) & (raggiCurvaturaM2[i+1] < raggioPunteriaSicurezza) ):
+    if ( (puntiY_M2Final[i]<puntiY_M2Final[i+2]) and (raggiCurvaturaM2[i+1] < raggioPunteriaSicurezza) ):
         indicePuntoDoppioContattoM2.append(i)
 
 puntiX_M2FinalDoppioContatto = []
@@ -874,7 +887,7 @@ for i in range(0,len(indicePuntoDoppioContattoM2),1):
    puntiX_M2FinalDoppioContatto.append(newAsseAngolare_M2[indicePuntoDoppioContattoM2[i]])
    puntiY_M2FinalDoppioContatto.append(newAsseAlzata_M2[indicePuntoDoppioContattoM2[i]])
 
-plt.plot(puntiX_M2FinalDoppioContatto,puntiY_M2FinalDoppioContatto, color='magenta', linewidth= 4, label='M2 NON RIPRODUCIBILE')
+plt.plot(puntiX_M2FinalDoppioContatto,puntiY_M2FinalDoppioContatto, 'ro', color='magenta', linewidth= 4, label='M2 NON RIPRODUCIBILE')
 plt.legend()
 
 # print(' derivata m1 x: \n')
@@ -895,18 +908,163 @@ raggioMinimoFresaM1 = []
 raggioMinimoFresaM2 = []    
 
 
-### RISCRIVI LA CAMMA IN BASE ALLA CURVATURA DELLA PUNTERIA 
+### 10. RISCRIZIONE CAMMA IN BASE A RAGGIO PUNTERIA NEI PUNTI DI NON RIPRODUCIBILITA'
 
 indiciSezioniDoppioContattoM1 = trovaInizioFineSerie(indicePuntoDoppioContattoM1)
 indiciSezioniDoppioContattoM2 = trovaInizioFineSerie(indicePuntoDoppioContattoM2)
 
-print(' indici punti doppio contatto: \n')
-print(str(indicePuntoDoppioContattoM1) + '\n')
-print(str(indiciSezioniDoppioContattoM2) + '\n')
+vettoreNullo = []
+
+if (indiciSezioniDoppioContattoM1 != vettoreNullo):
+
+    vettoreIniziDoppiContatti = []
+    vettoreFineDoppiContatti = []
+
+    # riempi i vettori di inzio e fine dei settori in cui non possiamo riprodurre la camma
+    for i in range(0,len(indiciSezioniDoppioContattoM1),2):
+        vettoreIniziDoppiContatti.append(indiciSezioniDoppioContattoM1[i])
+        vettoreFineDoppiContatti.append(indiciSezioniDoppioContattoM1[i+1])
+
+    puntiInizioNonRiproducibili = []
+    puntiFineNonRiproducibili = []
+
+    # riempi i vettori di inzio e fine dei valori dei settori in cui non possiamo riprodurre la camma
+    for i in range(0,len(indiciSezioniDoppioContattoM1),2):
+        puntiInizioNonRiproducibili.append(indiciSezioniDoppioContattoM1[i])
+        puntiFineNonRiproducibili.append(indiciSezioniDoppioContattoM1[i+1])
+
+    inizioAlzataPuntiNonRiporducibili = []
+    fineAlzataPuntiNonRiproducibili = []
+
+    for i in range(0, len(indiciSezioniDoppioContattoM1),2):
+        inizioAlzataPuntiNonRiporducibili.append(newAsseAlzata_M1[i])
+        fineAlzataPuntiNonRiproducibili.append(newAsseAlzata_M1[i+1])
+
+
+    #creo 4 slot per spline vuote (non ce ne possono essere più di 4 dai)
+
+    splineRiscritturaM1_1 = []
+    splineRiscritturaM1_2 = []
+    splineRiscritturaM1_3 = []
+    splineRiscritturaM1_4 = []
+
+    puntiXspline1 = []
+    puntiXspline2 = []
+    puntiXspline3 = []
+    puntiXspline4 = []
+
+    puntiYspline1 = []
+    puntiYspline2 = []
+    puntiYspline3 = []
+    puntiYspline4 = []
+
+    newXM1Riscritti_1 = []
+    newXM1Riscritti_2 = []
+    newXM1Riscritti_3 = []
+    newXM1Riscritti_4 = []
+
+    if puntiInizioNonRiproducibili != vettoreNullo:
+        if len(puntiInizioNonRiproducibili) >= 1:
+
+                # slot 1
+                puntiXspline1.append(newAsseAngolare_M1[puntiInizioNonRiproducibili[0]])
+                puntiXspline1.append(newAsseAngolare_M1[puntiFineNonRiproducibili[0]])
+
+                puntiYspline1.append(newAsseAlzata_M1[puntiInizioNonRiproducibili[0]])
+                puntiYspline1.append(newAsseAlzata_M1[puntiFineNonRiproducibili[0]])
+
+                splineRiscritturaM1_1 = CubicSpline(puntiXspline1, puntiYspline1, bc_type=bcTypeSalita)
+
+                newXM1Riscritti_1 = np.linspace(puntiInizioNonRiproducibili[0], puntiFineNonRiproducibili[0], int(puntiFineNonRiproducibili[0] - puntiInizioNonRiproducibili[0]) +1)
+                newYM1Riscritti_1 = splineRiscritturaM1_1(newXM1Riscritti_1)
+
+        if len(puntiInizioNonRiproducibili) >= 2:
+
+                # slot 2
+                puntiXspline2.append(newAsseAngolare_M1[puntiInizioNonRiproducibili[1]])
+                puntiXspline2.append(newAsseAngolare_M1[puntiFineNonRiproducibili[1]])
+
+                puntiYspline2.append(newAsseAlzata_M1[puntiInizioNonRiproducibili[1]])
+                puntiYspline2.append(newAsseAlzata_M1[puntiFineNonRiproducibili[1]])
+
+                splineRiscritturaM1_2 = CubicSpline(puntiXspline1, puntiYspline2, bc_type=bcTypeSalita)
+
+                newXM1Riscritti_2 = np.linspace(puntiInizioNonRiproducibili[1], puntiFineNonRiproducibili[1], int(puntiFineNonRiproducibili[1] - puntiInizioNonRiproducibili[1]) +1)
+                newYM1Riscritti_2 = splineRiscritturaM1_2(newXM1Riscritti_2)
+
+        if len(puntiInizioNonRiproducibili) >= 3:
+
+                # slot 3
+                puntiXspline3.append(newAsseAngolare_M1[puntiInizioNonRiproducibili[2]])
+                puntiXspline3.append(newAsseAngolare_M1[puntiFineNonRiproducibili[2]])
+
+                puntiYspline3.append(newAsseAlzata_M1[puntiInizioNonRiproducibili[2]])
+                puntiYspline3.append(newAsseAlzata_M1[puntiFineNonRiproducibili[2]])
+
+                splineRiscritturaM1_3 = CubicSpline(puntiXspline3, puntiYspline3, bc_type=bcTypeSalita)
+
+                newXM1Riscritti_3 = np.linspace(puntiInizioNonRiproducibili[2], puntiFineNonRiproducibili[2], int(puntiFineNonRiproducibili[2] - puntiInizioNonRiproducibili[2]) +1)
+                newYM1Riscritti_3 = splineRiscritturaM1_3(newXM1Riscritti_3)
+
+        if len(puntiInizioNonRiproducibili) >= 4:
+
+                # slot 4
+                puntiXspline4.append(newAsseAngolare_M1[puntiInizioNonRiproducibili[3]])
+                puntiXspline4.append(newAsseAngolare_M1[puntiFineNonRiproducibili[3]])
+
+                puntiYspline4.append(newAsseAlzata_M1[puntiInizioNonRiproducibili[3]])
+                puntiYspline4.append(newAsseAlzata_M1[puntiFineNonRiproducibili[3]])
+
+                splineRiscritturaM1_4 = CubicSpline(puntiXspline4, puntiYspline4, bc_type=bcTypeSalita)
+
+                newXM1Riscritti_4 = np.linspace(puntiInizioNonRiproducibili[3], puntiFineNonRiproducibili[3], int(puntiFineNonRiproducibili[3] - puntiInizioNonRiproducibili[3]) +1)
+                newYM1Riscritti_4 = splineRiscritturaM1_4(newXM1Riscritti_4)
+
+        print('PUNTI INIZIO NON RIPRODUCIBILI: ' + str(puntiInizioNonRiproducibili) + '\n' )
+        print('PUNTI INIZIO NON RIPRODUCIBILI: ' + str(puntiFineNonRiproducibili) + '\n')
+        
+        print('NEW X_M1 RISCRITTI: \n')
+        print(str(newXM1Riscritti_1) + '\n')
+        print(str(newXM1Riscritti_2) + '\n')
+        print(str(newXM1Riscritti_3) + '\n')
+        print(str(newXM1Riscritti_4) + '\n')
+
+        print('NEW Y_M1 RISCRITTI: \n')
+        print(str(newYM1Riscritti_1) + '\n')
+        print(str(newYM1Riscritti_2) + '\n')
+        # print(str(newYM1Riscritti_3) + '\n')
+        # print(str(newYM1Riscritti_4) + '\n')
+
+
+        newAsseAlzataRiscritto_M1 = []
+        newAsseAngolareRiscritto_M1 = []
+
+        for i in range(0, sezioniCamma+1, 1):
+            newAsseAlzataRiscritto_M1.append(i)
+            if isPresent(newXM1Riscritti_1,i) == True and len(puntiInizioNonRiproducibili) >= 1:
+                newAsseAlzataRiscritto_M1.append(float(newYM1Riscritti_1[i-int(newYM1Riscritti_1[0])]))
+            elif isPresent(newXM1Riscritti_2,i)== True and len(puntiInizioNonRiproducibili) >= 2:
+                newAsseAlzataRiscritto_M1.append(float(newYM1Riscritti_2[i-int(newYM1Riscritti_2[0])]))
+            elif isPresent(newXM1Riscritti_3,i)== True and len(puntiInizioNonRiproducibili) >= 3:
+                newAsseAlzataRiscritto_M1.append(float(newYM1Riscritti_3[i-int(newYM1Riscritti_3[0])]))
+            elif isPresent(newXM1Riscritti_4,i)== True and len(puntiInizioNonRiproducibili) >= 4:
+                newAsseAlzataRiscritto_M1.append(float(newYM1Riscritti_4[i-int(newYM1Riscritti_4[0])]))
+            else:
+                newAsseAlzataRiscritto_M1.append(float(newAsseAlzata_M1[i]))
+
+        plt.plot(newAsseAngolare_M1,newAsseAlzataRiscritto_M1, color='green', linewidth= 1, )
+
+  
+
+# print(' indici punti doppio contatto: \n')
+# print(str(indiciSezioniDoppioContattoM1) + '\n')
+# print(str(indiciSezioniDoppioContattoM2) + '\n')
+
+#riscrivi la sezione di camma
 
 
 
-#### SEZIONE PRINTERIA PORTAMI VIA
+#### 11. STAMPERIA PER VISUALIZZAZIONE GRAFICA
 
 #plt.xlabel("RAGGIO MINIMO CURVATURA M1 = " + str(raggioCruvaturaMinmoM1) + '\n' + "RAGGIO MINIMO CURVATURA M2 = " + str(raggioCruvaturaMinmoM2))
 
@@ -927,7 +1085,8 @@ print("puntiCriticiAlzataM1Campionati \t = \t" + str(puntiCriticiAlzataM1Campion
 print("puntiCriticiAlzataM2Campionati \t = \t" + str(puntiCriticiAlzataM2Campionati))
 print("indiceEsternoPuntiCriticiCampionati \t = \t" + str(indiceEsternoPuntiCriticiCampionati))
 
-#### SALVA I PUNTI IN UN .csv DA ESPORTARE IN SOLDIWORKS
+
+#### 12. SALVA PUNTI CAMMA IN UN .tXt PER SOLIDWORKS
 
 with open("ZZZpuntiM1_SWformat.txt", "w") as fileM1:
     for i in range(0, sezioniCamma+1, 1):
@@ -993,7 +1152,7 @@ with open("ZZZdiagrammaAlzataM2.txt", "w") as fileAlzataM2:
        fileAlzataM2.write(asseTemporale +'\n'+ alzataYm2)
 
 
-#### SALVA I PUNTI IN UN .txt PER LE LOOKUP TABLE DELLE CAMME
+#### 13. SALVA PUNTI CAMMA IN UN .csv PER INDRASIZE
 
 with open("ZZZlookuptable_M1.txt", "w") as lookUpTableM1:
     lookUpTableM1.write('DECIMI ANGOLO CAMMA' + '\t' + 'ALZATA PIATTELLO' + '\t' + 'ALZATA TEORICA RISPETTO PIATTELLO' + '\n')
@@ -1025,12 +1184,6 @@ with open("ZZZlookuptable_M2.txt", "w") as lookUpTableM2:
 
 
 
-### COMANDO FINALE (TENERE ALLA FINE DI TUTTO SEMPRE CAZZO)
+### 14. COMANDI LOGICAMENTE IN FONDO AL CODICE
+
 plt.show()
-   
-   
-
-
-
-
-
