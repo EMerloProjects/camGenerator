@@ -1,3 +1,5 @@
+# se i pacchetti non sono installati è sempre "pip install nome_pacchetto"
+
 import pandas as pd
 import numpy as np
 import xlrd
@@ -13,6 +15,10 @@ from pandas import DataFrame
 from scipy.interpolate import UnivariateSpline
 from scipy.interpolate import BSpline
 from scipy.interpolate import make_smoothing_spline
+
+#cambia cartella
+percorsoPrincipaleProgramma = "C:/Users/e.merlo/Desktop/PROGETTI/P21 - RIDISEGNAZIONE PROFILO CAMME/FD618"
+os.chdir(percorsoPrincipaleProgramma)
 
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
@@ -36,7 +42,7 @@ os.system('cls')
 
 
 ### 1.  LETTURA FILE EXCEL CON LUT SALITA
-nomePercorsoLUTsalita = str(r'C:\Users\e.merlo\Desktop\lookuptableSalita_FD618-FD821.xlsx')
+nomePercorsoLUTsalita = str(r'lookuptableSalita_FD618-FD821.xlsx')
 yM1Salita = pd.read_excel(nomePercorsoLUTsalita, usecols = "A")
 yM2Salita = pd.read_excel(nomePercorsoLUTsalita, usecols = "B")
 yR1Salita = pd.read_excel(nomePercorsoLUTsalita, usecols = "C")
@@ -52,7 +58,7 @@ yR3Salita = np.array(yR3Salita)
 yR4Salita = np.array(yR4Salita)
 
 ### 2.  LETTURA FILE EXCEL CON LUT DISCESA
-nomePercorsoLUTdiscesa = str(r'C:\Users\e.merlo\Desktop\lookuptableDiscesa_FD618-FD821.xlsx')
+nomePercorsoLUTdiscesa = str(r'lookuptableDiscesa_FD618-FD821.xlsx')
 yM1Discesa = pd.read_excel(nomePercorsoLUTdiscesa, usecols = "A")
 yM2Discesa = pd.read_excel(nomePercorsoLUTdiscesa, usecols = "B")
 yPiattelloDiscesa = pd.read_excel(nomePercorsoLUTdiscesa, usecols = "C")
@@ -63,7 +69,7 @@ yPiattelloDiscesa = np.array(yPiattelloDiscesa)
 
 
 #### 3.  LETTURA FILE CONFIGURAZIONE
-nomePercorsoConfigurazione = str(r'C:\Users\e.merlo\Desktop\configurazione_cammeFD618-821.xlsx')
+nomePercorsoConfigurazione = str(r'configurazione_cammeFD618-821.xlsx')
 configurazioneCamma = pd.read_excel(nomePercorsoConfigurazione, usecols = "B")
 configurazioneCammaArray = np.array(configurazioneCamma)
 
@@ -201,9 +207,14 @@ def trovaInizioFineSerie(vettore):
         settoriInizioFineSerie.append(vettore[-1])            
    return settoriInizioFineSerie
 
+# Funzione per pulire il terminale
+def clearTerminal():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
 
 
 ### 5.  INIZIO SCRIPT
+clearTerminal
 
 # indice di frazioni del cerchio standard
 numeroDivisioniCerchio = 3600
@@ -1088,7 +1099,8 @@ print("indiceEsternoPuntiCriticiCampionati \t = \t" + str(indiceEsternoPuntiCrit
 
 #### 12. SALVA PUNTI CAMMA IN UN .tXt PER SOLIDWORKS
 
-with open("ZZZpuntiM1_SWformat.txt", "w") as fileM1:
+# (occhio che li spara dentro il percorso principale inizialmente definito)
+with open("/ZZZpuntiM1_SWformat.txt", "w") as fileM1:
     for i in range(0, sezioniCamma+1, 1):
        if i == sezioniCamma: #cucisci la fine con l'inizio
          pezzo1 = str(round(puntiX_M1Final[0],2))
@@ -1154,6 +1166,7 @@ with open("ZZZdiagrammaAlzataM2.txt", "w") as fileAlzataM2:
 
 #### 13. SALVA PUNTI CAMMA IN UN .csv PER INDRASIZE
 
+# (occhio che li spara dentro C/users/tuoUtente e non riesco a cambiarlo)
 with open("ZZZlookuptable_M1.txt", "w") as lookUpTableM1:
     lookUpTableM1.write('DECIMI ANGOLO CAMMA' + '\t' + 'ALZATA PIATTELLO' + '\t' + 'ALZATA TEORICA RISPETTO PIATTELLO' + '\n')
     for i in range(0, sezioniCamma+1, 1):
