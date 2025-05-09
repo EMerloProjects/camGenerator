@@ -4,7 +4,7 @@ Althoug it is related to a specific task it contains 95% of the scripts and func
 Hence it is here just to serve myself as a personal python cheat sheet as to not re-invent the wheel every single time I have to write code.
 
 Please forgive the occasional swear words and venetian dialect written in the code.
-Swearing is a cultural fenomenon in my country and serves as a cathartic experience in order to relax oneself durin difficult times.
+Swearing is a cultural fenomenon in my country and serves as a cathartic experience in order to relax oneself during difficult times.
 Omitting those words would have taken me too much time at the risk of breaking the code itself.
 
 © 2024 Merlo Edoardo. Licensed under the MIT License.
